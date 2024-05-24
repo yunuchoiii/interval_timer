@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
 
 enum TimerState { ready, running, resting, completed, paused, nothing }
@@ -15,6 +16,10 @@ class TimerService extends ChangeNotifier {
   TimerState _state = TimerState.nothing; // 상태 관리
   TimerState _prevState = TimerState.nothing; // 일시정지 이전 상태 관리
   Timer? _timer;
+
+  TimerService() {
+    _loadSettings();
+  }
 
   int get runningTime => _runningTime;
   int get restingTime => _restingTime;
@@ -87,8 +92,10 @@ class TimerService extends ChangeNotifier {
 
   void stopTimer() {
     _timer?.cancel();
+    _timer = null;
     _currentInterval = 1;
     _currentTime = 0;
+    _state = TimerState.nothing;
     notifyListeners();
   }
 
@@ -100,16 +107,19 @@ class TimerService extends ChangeNotifier {
 
   void setRunningTime(int time) {
     _runningTime = time;
+    _saveSettings();
     notifyListeners();
   }
 
   void setRestingTime(int time) {
     _restingTime = time;
+    _saveSettings();
     notifyListeners();
   }
 
   void setIntervals(int intervals) {
     _intervals = intervals;
+    _saveSettings();
     notifyListeners();
   }
 
@@ -119,6 +129,25 @@ class TimerService extends ChangeNotifier {
   }
 
   void vibrate() {
-    Vibration.vibrate(duration: 1000);
+    Vibration.hasVibrator().then((bool? hasVibrator) {
+      if (hasVibrator == true) {
+        Vibration.vibrate(duration: 1000);
+      }
+    });
+  }
+
+  Future<void> _saveSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('runningTime', _runningTime);
+    await prefs.setInt('restingTime', _restingTime);
+    await prefs.setInt('intervals', _intervals);
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    _runningTime = prefs.getInt('runningTime') ?? 30;
+    _restingTime = prefs.getInt('restingTime') ?? 10;
+    _intervals = prefs.getInt('intervals') ?? 5;
+    notifyListeners();
   }
 }

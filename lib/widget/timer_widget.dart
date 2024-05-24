@@ -42,7 +42,8 @@ class TimerDisplay extends StatelessWidget {
                 strokeWidth: 8.w,
                 backgroundColor: Colors.white.withOpacity(0.3),
                 valueColor: AlwaysStoppedAnimation<Color>(
-                    Colors.white.withOpacity(0.8)),
+                  Colors.white.withOpacity(0.8),
+                ),
               ),
             ),
             Center(
@@ -58,6 +59,7 @@ class TimerDisplay extends StatelessWidget {
                       textAlign: TextAlign.right,
                       style: TextStyle(
                         fontSize: 36.sp,
+                        fontWeight: FontWeight.w700,
                         color: Colors.white.withOpacity(
                           int.parse(formatMinutes(readTimer.currentTime)) >= 1
                               ? 1

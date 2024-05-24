@@ -69,35 +69,31 @@ class TimerPage extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(
-                        height: 10.h,
-                      ),
+                      SizedBox(height: 10.h),
                       TimerDisplay(readTimer: readTimer),
                       IconButtonRow(iconButtonProps: iconButtonProps),
-                      Opacity(
-                        opacity: isWorkingOut ? 0 : 1,
-                        child: IconButton(
-                          onPressed: () {
-                            scrollController.animateTo(
-                              scrollController.position.maxScrollExtent,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeOut,
-                            );
-                          },
-                          icon: const Icon(Icons.settings),
-                          iconSize: 32.r,
-                          color: AppColors.gray01,
-                          padding: const EdgeInsets.all(20),
-                        ),
-                      )
+                      IconButton(
+                        onPressed: () {
+                          scrollController.animateTo(
+                            scrollController.position.maxScrollExtent,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
+                        },
+                        icon: const Icon(Icons.settings),
+                        iconSize: 32.r,
+                        color: AppColors.gray01,
+                        padding: const EdgeInsets.all(20),
+                      ),
+                      SizedBox(height: 10.h),
                     ],
                   ),
                 ),
-                if (!isWorkingOut)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 40),
-                    child: DropdownRow(dropdownProps: dropdownProps),
-                  ),
+                // if (!isWorkingOut)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 40),
+                  child: DropdownRow(dropdownProps: dropdownProps),
+                ),
               ],
             ),
           ),
@@ -148,7 +144,7 @@ class TimerPage extends StatelessWidget {
       TimerService readTimer, TimerService watchTimer) {
     return [
       {
-        'title': 'Run Time',
+        'title': 'Exercise Time',
         'value': watchTimer.runningTime,
         'onChanged': (value) => readTimer.setRunningTime(value!),
         'items': [10, 20, 30, 40, 50, 60, 70, 80, 90]
@@ -159,7 +155,7 @@ class TimerPage extends StatelessWidget {
             .toList(),
       },
       {
-        'title': 'Rest Time',
+        'title': 'Break Time',
         'value': watchTimer.restingTime,
         'onChanged': (value) => readTimer.setRestingTime(value!),
         'items': [10, 20, 30, 40, 50, 60, 70, 80, 90]
